@@ -1,0 +1,21 @@
+<h2>Crypto Currency Lookup</h2>
+<br/>
+
+<%= form_tag home_lookup_path, :method => 'POST' do %>
+	<%= text_field_tag 'sym', nil, placeholder: 'Enter Crypto Symbol', size: 50 %>
+	<%= submit_tag 'Lookup Stock Quote' %>
+<%end%>
+
+<%- if @symbol.blank? -%>
+  Please write your crypto symbol.
+<%- else -%>
+  <%- found = @lookup_coins.find { |c| c['symbol'] == @symbol } -%>
+  <%- if (found) -%>
+    <%= found["symbol"]%> <br/> <%= found["name"]%>:
+    <%= number_to_currency(found['quote']['USD']['price'].round(2), :unit => "$ ") %>
+    <br/>
+    <%= found["cmc_rank"]%> <br/> 
+  <%- else -%>
+    Sorry, there was a mistake, try again
+  <%- end -%>
+<%- end -%>

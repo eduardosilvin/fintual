@@ -1,0 +1,130 @@
+fintual
+
+INDEX.html.erb:
+
+<h1>Stocks</h1>
+
+<table class="table table-striped table-bordered table-hover">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Symbol</th>
+      <th>Amount of Stocks </th>
+      <th>Date 1 </th>      
+      <th>Cost per Stock 1</th>
+      <th>Total $ 1</th>
+	  <th>Date 2</th>
+      <th>Cost per Stock 2</th>
+      <th>Total $ 2</th>      
+      <th>Profit bt Dates</th>
+      <th>Current Individual $</th>
+      <th>Current Profit</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @cryptos.each do |stock| %>
+          <% if stock.symbol %>
+            <% stock.symbol = stock.symbol.upcase %>
+          <% end %>
+         <tr>     
+       <% for x in @lookup_stock %>
+        <% if stock.symbol == x['symbol'] %>
+          <td><%= ['name'] %></td>
+          <td><%= stock.symbol %></td>
+          <td><%= stock.amount_owned %></td>
+          <td><%= stock.purchase_date %></td>
+          	<% if stock.purchase_date == x['date'] %>          
+          <td>$<%= x['date']['quote']['USD']['LastUpdate'] %></td>
+          <td>$<%= d1 = x['date']['quote']['USD']['LastUpdate'] * stock.amount_owned %><br/></td>
+          	<% end %>
+          <td><%= stock.sale_date %></td>
+          	<% if stock.sale_date == x['date'] %>          
+          <td>$<%= x['date']['quote']['USD']['LastUpdate'] %></td>
+          <td>$<%= d2 = x['date']['quote']['USD']['LastUpdate'] * stock.amount_owned %><br/></td>
+          	<% end %>
+          <td>$<%= d2 - d1 %></td>
+          	<% if Date.today == x['date'] %>          
+          <td>$<%= currd = x['date']['quote']['USD']['LastUpdate'] %></td>
+          	<% end %>
+          <td>%<%= currd - d1 %></td>
+        <%end%>
+      <%end%>
+        </tr>
+      <% end %>
+    <% end %>
+  </tbody>
+</table>
+
+<echo table;>
+
+<iframe width="800" height="450" src="https://app.powerbi.com/view?r=eyJrIjoiMjIwYmNmNjUtMjlhMC00MTllLTk1NmMtOTAzOGFmYTFlNjUzIiwidCI6IjhkYWI1OTg5LWU0YWEtNDEwYS04ZDU0LTAxNGMxYjcxZDVkYyJ9" frameborder="0" allowFullScreen="true"></iframe>
+
+
+RS = (Valor final + Rendimientos – Gastos – Inversión inicial) / Inversión inicial.
+
+
+
+MODEL.rb:
+
+class User < ApplicationRecord
+         has_many :stocks
+end
+
+
+
+class Stock < ApplicationRecord
+	belongs_to :user
+end
+
+
+
+
+
+
+_form.html.erb
+
+<%= form_with(model: stock) do |form| %>
+
+  <div class="field">
+    <%= form.label :symbol %>
+    <%= form.text_field :symbol %>
+  </div>
+
+  <div class="field">
+    <%= form.label :purchase_date %>
+    <%= form.text_field :purchase_date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :sale_date %>
+    <%= form.text_field :sale_date %>
+  </div>
+
+  <div class="field">
+    <%= form.label :amount_owned %>
+    <%= form.text_field :amount_owned %>
+  </div>
+
+  <div class="actions">
+    <%= form.submit %>
+  </div>
+<% end %>
+
+
+
+CONTROLLER.rb:
+
+  def index
+    @stock = stock.all
+    require 'net/http'
+    require 'json'
+
+    @url = 'https://pro-api.coinmarketcap.com/v1/cryptocurrency/listings/latest?start=1&limit=100&CMC_PRO_API_KEY=MyKey'
+    @uri = URI(@url)
+    @response = Net::HTTP.get(@uri)
+    @lookup_stock = JSON.parse(@response)
+    @lookup_stock = @lookup_stock['data']
+
+
+  end

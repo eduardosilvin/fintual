@@ -1,0 +1,24 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+  	<li><%= link_to "Crypto", root_path, class:"navbar-brand" %></li>
+     
+     <ul class="navbar-nav ">
+<!-- Para localizar los colores buscamos en goole colores html y colocamos el simbolo # y el codigo, como en PBI -->
+       <li><%= link_to "Home", root_path, class: "btn btn-dark btn-outline-light", style: 'color:#EAEAEA' %></li> 
+	   <li><%= link_to "Lookup", home_lookup_path, class: "btn btn-dark btn-outline-light", style: 'color:#EAEAEA' %></li>
+
+    
+	   <% if user_signed_in? %>
+		   <li><%= link_to "List of Cryptos", cryptos_path, class: "btn btn-dark btn-outline-light", style: 'color:#EAEAEA' %></li>
+		   <li><%= link_to "Add Crypto", new_crypto_path, class: "btn btn-dark btn-outline-light", style: 'color:#EAEAEA' %></li>
+		   <li><%= link_to "Log Out", destroy_user_session_path, class: "btn btn-dark btn-outline-light", method: :delete, style: 'color:#EAEAEA' %></li>
+		   <li><%= link_to "Edit Profile", edit_user_registration_path, class: "btn btn-dark btn-outline-light", style: 'color:#EAEAEA' %></li>
+	   <% else %>
+		   <li><%= link_to "Log In", user_session_path, class: "btn btn-dark btn-outline-light", style: 'color:#EAEAEA' %></li>
+		   <li><%= link_to "Sign Up", new_user_registration_path, class: "btn btn-dark btn-outline-light", style: 'color:#EAEAEA' %></li>
+	   <% end %>
+
+ 	 </ul>
+  </div>
+</nav>
+
